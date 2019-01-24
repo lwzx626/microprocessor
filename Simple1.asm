@@ -2,33 +2,52 @@
 	
 	code
 	org 0x0
-	goto	setup
+	goto	start
 	
 	org 0x100		    ; Main code starts here at address 0x100
 
-	; ******* Programme FLASH read Setup Code ****  
-setup	bcf	EECON1, CFGS	; point to Flash program memory  
-	bsf	EECON1, EEPGD 	; access Flash program memory
-	goto	start
-	; ******* My data and where to put it in RAM *
-myTable data	"This is just some data"
-	constant 	myArray=0x400	; Address in RAM for data
-	constant 	counter=0x10	; Address of counter variable
-	; ******* Main programme *********************
-start 	lfsr	FSR0, myArray	; Load FSR0 with address in RAM	
-	movlw	upper(myTable)	; address of data in PM
-	movwf	TBLPTRU		; load upper bits to TBLPTRU
-	movlw	high(myTable)	; address of data in PM
-	movwf	TBLPTRH		; load high byte to TBLPTRH
-	movlw	low(myTable)	; address of data in PM
-	movwf	TBLPTRL		; load low byte to TBLPTRL
-	movlw	.22		; 22 bytes to read
-	movwf 	counter		; our counter register
-loop 	tblrd*+			; move one byte from PM to TABLAT, increment TBLPRT
-	movff	TABLAT, POSTINC0	; move read data from TABLAT to (FSR0), increment FSR0	
-	decfsz	counter		; count down to zero
-	bra	loop		; keep going until finished
+start
+	movlw 	0x0
+	movwf	TRISD, ACCESS	    ; Port D all outputs
+	movwf	TRISC, ACCESS	    ; Port C all outputs
+	movwf	TRISH, ACCESS	    ; Port H all outputs
+	movlw   0xF
+	movwf   PORTD, ACCESS	    ; Set oe1, oe2 and cp1, cp2 to high
+	clrf    TRISE		    ; Put port E on the bus
+	movlw   0xCD
+	movwf   LATE, ACCESS
+	movlw   0xD
+	movwf   PORTD, ACCESS	    ; Lower cp1
+	movlw   0xF
+	movwf   PORTD, ACCESS	    ; Raise cp1
+	movlw   0xAA	    
+	movwf   LATE, ACCESS	    ; Write data to memory
+	movlw   0x7
+	movwf   PORTD, ACCESS	    ; Lower cp2
+	movlw   0xF
+	movwf   PORTD, ACCESS	    ; Raise cp2
+	setf    TRISE		    ; Take port E off the bus
+	movlw   0xE
+	movwf   PORTD, ACCESS	    ; Lower oe1
+	movlw   0xC
+	movwf   PORTD, ACCESS	    ; Lower cp1
+	movff   PORTE, PORTC	    ; OUTPUT at PORTC
+	movlw   0xE
+	movwf   PORTD, ACCESS	    ; Raise cp1
+	movlw   0xF
+	movwf   PORTD, ACCESS	    ; Raise oe1
+	movlw   0xB
+	movwf   PORTD, ACCESS	    ; Lower oe2
+	movlw   0x3
+	movwf   PORTD, ACCESS	    ; Lower cp2
+	movff   PORTE, PORTH	    ; Output at PORTH
+	movlw   0xB
+	movwf   PORTD, ACCESS	    ; Raise cp2
+	movlw   0xF
+	movwf   PORTD, ACCESS	    ; Raise oe2
+	clrf    TRISE		    ; Take port E off the bus
 	
-	goto	0
+	
+	goto start
 
 	end
