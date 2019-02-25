@@ -4,6 +4,8 @@
 	extern	LCD_Write_Hex			    ; external LCD subroutines
 	extern  ADC_Setup, ADC_Read		    ; external ADC routines
 	extern	LCD_delay_ms
+	global	position_check, motor_setup, motor_start, motor_for, motor_back
+	global	motor_stop, pluck_motor,left_shift_high, right_shift_low
 
 acs0	udata_acs   ; reserve data space in access ram
 counter	    res 1   ; reserve one byte for a counter variable
@@ -12,8 +14,8 @@ xtmp	    res 1
 postmp	    res 1
 ifplucked   res 1
 
-rst	code	0    ; reset vector
-	goto	setup
+;rst	code	0    ; reset vector
+;	goto	setup
 	
 main	code
 	; ******* Programme FLASH read Setup Code ***********************
@@ -23,9 +25,30 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	call	ADC_Setup	; setup ADC
 	call	motor_setup
 
-position_check
-	movlw	0xB8		;record- 
+main	movlw	0xAC
 	movwf	postmp		;a note value
+	call	position_check
+	call	pluck_motor
+	movlw	0xCA
+	movwf	postmp		;a note value
+	call	position_check
+	call	pluck_motor
+	movlw	0xC1
+	movwf	postmp		;a note value
+	call	position_check
+	call	pluck_motor
+	movlw	0xB2
+	movwf	postmp		;a note value
+	call	position_check
+	call	pluck_motor
+	movlw	0xBF
+	movwf	postmp		;a note value
+	call	position_check
+	call	pluck_motor
+	goto	main
+	
+position_check
+	call	LCD_Setup
 	call	ADC_Read	;mearsure the feedback from potentiometer
 	call	left_shift_high	;
 	movlw	0xF0		; 
@@ -33,18 +56,17 @@ position_check
 	call	right_shift_low ;
 	iorwf	ADRESH, W	;Combine with high bits to make hhhhLLLL
 	movwf	xtmp		;xtmp stores current reading 
-	;movf	xtmp, W		;
 	call	LCD_Write_Hex	;Convert bits stored in W to hex and send to LCD
-	movlw	0x1		;buffer region 0xB6 - 0xBC
+	movlw	0x2		;buffer region 0xB6 - 0xBC
 	subwf	postmp, W	;0xB5 to W
 	cpfsgt	xtmp		;if current pos > 0x60, then check if it < 0x80
 	goto	motor_back	;if current pos < 0x60, move towards buffer
-	movlw	0x1		;
+	movlw	0x2		;
 	addwf	postmp, W	;0xBB to W
 	cpfslt	xtmp		;if 60< current pos < 0x80, then stop moving,
 	goto	motor_for	;if current pos > 0x80, move towards buffer
-	call	motor_stop	;stop and pluck
-	goto	setup
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         call	motor_stop	;stop and pluck
+	return
 	
 motor_setup
 	clrf	TRISE
@@ -57,22 +79,22 @@ motor_start
 motor_for
 	bsf	PORTE, 0	;
 	call	motor_start
-	goto	setup
+	goto	position_check
 motor_back
 	bcf	PORTE, 0
 	call	motor_start
-	goto	setup
+	goto	position_check
 motor_stop
 	bcf	PORTE, 1
-	btfss	ifplucked, 0
-	call	pluck_motor
+	;btfss	ifplucked, 0
+	;call	pluck_motor
 	return
 pluck_motor
 	bsf	PORTE, 2
-	movlw	0x2F
+	movlw	0xFF
 	call	LCD_delay_ms
 	bcf	PORTE, 2
-	setf	ifplucked
+	;setf	ifplucked
 	return
 left_shift_high
 	rlcf	ADRESH		;Left shift high bits for 4 positions
