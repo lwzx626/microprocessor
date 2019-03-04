@@ -39,112 +39,112 @@ start	movlw	.200
 checkA	movlw	0x7E
 	CPFSEQ	PORTD
 	goto	checkB
-	movlw	"A"
+	movlw	"B"
 	call	LCD_Send_Byte_D
 	call	note_B2
 	goto	start
 checkB	movlw	0x7B
 	CPFSEQ	PORTD
 	goto	checkC
-	movlw	"B"
+	movlw	"C"
 	call	LCD_Send_Byte_D
 	call	note_C2
 	goto	start
 checkC	movlw	0x77
 	CPFSEQ	PORTD
 	goto	checkD
-	movlw	"C"
+	movlw	"S"
 	call	LCD_Send_Byte_D
 	call	staff
 	goto	start
 checkD	movlw	0xB7
 	CPFSEQ	PORTD
 	goto	checkE
-	movlw	"D"
+	movlw	"A"
 	call	LCD_Send_Byte_D
 	call	note_A2
 	goto	start
 checkE	movlw	0xD7
 	CPFSEQ	PORTD
 	goto	checkF
-	movlw	"E"
+	movlw	"D"
 	call	LCD_Send_Byte_D
 	call	note_D2
 	goto	start
 checkF	movlw	0xE7
 	CPFSEQ	PORTD
 	goto	check1
-	movlw	"F"
+	movlw	"G"
 	call	LCD_Send_Byte_D
 	call	note_G1
 	goto	start
 check1	movlw	0xEE
 	CPFSEQ	PORTD
 	goto	check2
-	movlw	"E"
+	movlw	"D"
 	call	LCD_Send_Byte_D
 	call	note_D1
 	goto	start
 check2	movlw	0xED
 	CPFSEQ	PORTD
 	goto	check3
-	movlw	"D"
+	movlw	"E"
 	call	LCD_Send_Byte_D
 	call	note_E1
 	goto	start
 check3	movlw	0xEB
 	CPFSEQ	PORTD
 	goto	check4
-	movlw	"G"
+	movlw	"F"
 	call	LCD_Send_Byte_D
 	call	note_F1
 	goto	start
 check4	movlw	0xDE
 	CPFSEQ	PORTD
 	goto	check5
-	movlw	"F"
+	movlw	"A"
 	call	LCD_Send_Byte_D
 	call	note_A1
 	goto	start
 check5	movlw	0xDD
 	CPFSEQ	PORTD
 	goto	check6
-	movlw	"A"
+	movlw	"B"
 	call	LCD_Send_Byte_D
 	call	note_B1
 	goto	start
 check6	movlw	0xDB
 	CPFSEQ	PORTD
 	goto	check7
-	movlw	"B"
+	movlw	"C"
 	call	LCD_Send_Byte_D
 	call	note_C1
 	goto	start
 check7	movlw	0xBE
 	CPFSEQ	PORTD
 	goto	check8
-	movlw	"G"
+	movlw	"E"
 	call	LCD_Send_Byte_D
 	call	note_E2
 	goto	start
 check8	movlw	0xBD
 	CPFSEQ	PORTD
 	goto	check9
-	movlw	"C"
+	movlw	"F"
 	call	LCD_Send_Byte_D
 	call	note_F2
 	goto	start
 check9	movlw	0xBB
 	CPFSEQ	PORTD
 	goto	check0
-	movlw	"D"
+	movlw	"G"
 	call	LCD_Send_Byte_D
 	call	note_G2
 	goto	start
 check0	movlw	0x7D
 	CPFSEQ	PORTD
 	goto	start
-	movlw	"0"
+	movlw	"C"
 	call	LCD_Send_Byte_D
 	call	note_C2
 	goto	start
