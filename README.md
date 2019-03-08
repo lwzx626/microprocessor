@@ -1,12 +1,8 @@
 # Microprocessors
 Repository for Physics Year 3 microprocessors lab
 
-A simple assembly program for PIC18 microprocessor, that counts to 100, putting the current count value out onto PORTB
+notes_table.asm contains the fundamental algorithm
 
-Reads a table (message) from programme memory to data memory
+simple1.asm contains the song the instrument will play when press ''C'' on the keypad
 
-Initialises UART and writes a message (the table) to UART 
-
-Initialises LCD and writes the message to the LCD
-
-Initialises ADC, reads values and display as hex on LCD
+keypad_control contains the higher level algorithm that controls the ruler instrument by a 16-button keypad.
