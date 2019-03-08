@@ -13,39 +13,39 @@ main	code	0
 	banksel PADCFG1
 	goto	setup
 
-setup	call	LCD_Setup	; setup LCD
+setup	call	LCD_Setup		; setup LCD
 	call	motor_setup
-	bsf	PADCFG1, RJPU, BANKED   ;Set the pull-ups to on for PORTE
-	bcf	EECON1, CFGS	; point to Flash program memory  
-	bsf	EECON1, EEPGD 	; access Flash program memory
-	call	ADC_Setup	; setup ADC
+	bsf	PADCFG1, RJPU, BANKED   ;Set the pull-ups to on for PORTJ
+	bcf	EECON1, CFGS		; point to Flash program memory  
+	bsf	EECON1, EEPGD 		; access Flash program memory
+	call	ADC_Setup		; setup ADC
 
 start	movlw	.200
 	call	LCD_delay_ms
-	clrf	TRISD
-	clrf	LATJ		    ;Write 0s to the LATE register
+	clrf	TRISD			;PORT D all output
+	clrf	LATJ		    	;Write 0s to the LATJ register
 	movlw	0x0F
-	movwf	TRISJ		    ;PORTE 4-7 outputs and PORTE 0-3 inputs
+	movwf	TRISJ		   	;PORTE 4-7 outputs and PORTE 0-3 inputs
 	movlw	.10
 	call	LCD_delay_ms
-	movff	PORTJ, PORTD	    ;output column to PORTD
+	movff	PORTJ, PORTD	   	;output column to PORTD
 	movlw	0xF0
-	movwf	TRISJ		    ;PORTE 0-3 outputs and PORTE 4-7 inputs
+	movwf	TRISJ		   	;PORTE 0-3 outputs and PORTE 4-7 inputs
 	movlw	.10
 	call	LCD_delay_ms
-	movf	PORTJ, W	    ;output row to W
-	addwf	PORTD		    ;add W to column and output to PORTD
+	movf	PORTJ, W	    	;output row to W
+	addwf	PORTD		    	;add W to column and output to PORTD
 
-checkA	movlw	0x7E
-	CPFSEQ	PORTD
-	goto	checkB
-	movlw	"B"
-	call	LCD_Send_Byte_D
-	call	note_B2
-	goto	start
-checkB	movlw	0x7B
-	CPFSEQ	PORTD
-	goto	checkC
+checkA	movlw	0x7E			;if button ''A'' is pressed, the data in PORT D is 0x7E
+	CPFSEQ	PORTD			;if button ''A'' is not pressed, check for next button
+	goto	checkB			
+	movlw	"B"			;if button ''A'' is pressed, write ''B'' to the 1st row- 
+	call	LCD_Send_Byte_D		;of the LCD, and play the note ''B''
+	call	note_B2			
+	goto	start			;then jump back to the start
+checkB	movlw	0x7B			;the notes correspond to the buttons in the order-
+	CPFSEQ	PORTD			;of the button's arrangement
+	goto	checkC			;similar comments as above
 	movlw	"C"
 	call	LCD_Send_Byte_D
 	call	note_C2
