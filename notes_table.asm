@@ -1,7 +1,7 @@
 	#include p18f87k22.inc
 
-	extern  LCD_Curser_1, LCD_Curser_2, LCD_Write_Hex	; external LCD subroutines
-	extern  ADC_Read			; external ADC routines
+	extern  LCD_Curser_1, LCD_Curser_2, LCD_Write_Hex	
+	extern  ADC_Read			
 	extern	LCD_delay_ms, LCD_Setup
 	global	position_check, pluck_motor, motor_setup
 	global	note_D1, note_E1, note_F1, note_G1, note_A1, note_B1, note_C1 
@@ -38,31 +38,31 @@ position_check
 	return
 	
 motor_setup
-	clrf	TRISE
-	clrf	PORTE
+	clrf	TRISE		;PORT E all output
+	clrf	PORTE		;reset PORT E	
 	return
 
 motor_for
-	bcf	PORTE, 0	;
-	nop
-	bsf     PORTE, 1
-	goto	position_check
+	bcf	PORTE, 0	;0th bit controls diretion
+	nop			;need time for settling the data on PORT E 
+	bsf     PORTE, 1	;1st bit controls the switch of the driving motor 
+	goto	position_check	;recheck position
 
 motor_back
-	bsf	PORTE, 0
+	bsf	PORTE, 0	;similar as motor_for
 	nop
 	bsf     PORTE, 1
 	goto	position_check
 
 motor_stop
-	bcf	PORTE, 1
+	bcf	PORTE, 1	;switch off the driving motor
 	return
 
 pluck_motor
-	bsf	PORTE, 2
-	movlw	0x2D
-	call	LCD_delay_ms
-	bcf	PORTE, 2
+	bsf	PORTE, 2	;2nd bit controls the switch of the plucking motor
+	movlw	0x2D		;motor on for 45ms
+	call	LCD_delay_ms	;
+	bcf	PORTE, 2	;then switch off to prevent plucking several times
 	return
 
 left_shift_high
@@ -79,10 +79,10 @@ right_shift_low
 	rrcf	ADRESL, W	;store low bits to W
 	return
 
-note_D1	movlw 0xD2
-	movwf postmp
-	call position_check
-	call pluck_motor
+note_D1	movlw 0xD2		;Store note's position
+	movwf postmp		;to postmp
+	call position_check	;drive the ruler to the note's position	
+	call pluck_motor	;then pluck
 	return
 	
 note_E1 movlw 0xCE
