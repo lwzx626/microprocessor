@@ -18,14 +18,15 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	call	motor_setup	; setup the motor
 
 ;staff contains a pre-programmed song, which is the first phrase in "little star"
+;the melody goes like ''do-do-sol-sol-la-la-sol, fa-fa-mi-mi-re-re-do''
 
-staff	call	note_C1
-	movlw	0xFF
+staff	call	note_C1		;play ''do''
+	movlw	0xFF		;wait for 255ms
 	call	LCD_delay_ms
-	movlw	0xFF
+	movlw	0xFF		;wait for another 255ms until playing the next note
 	call	LCD_delay_ms
 	
-	call	note_C1
+	call	note_C1		;similar comments as above
 	movlw	0xFF
 	call	LCD_delay_ms
 	movlw	0xFF
@@ -55,7 +56,7 @@ staff	call	note_C1
 	movlw	0xFF
 	call	LCD_delay_ms
 	
-	call	note_G2
+	call	note_G2		
 	movlw	0xFF
 	call	LCD_delay_ms
 	movlw	0xFF
